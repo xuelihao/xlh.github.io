@@ -1,0 +1,19 @@
+{
+    "data":[
+        {
+            "title":"黑夜使者",
+            "url":"./img/1.jpg",
+            "price":"99"
+        },
+        {
+            "title":"黎明使者",
+            "url":"./img/2.jpg",
+            "price":"199"
+        },
+        {
+            "title":"冠军掠夺者",
+            "url":"./img/3.jpg",
+            "price":"299"
+        }
+    ]
+}

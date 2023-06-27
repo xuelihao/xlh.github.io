@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        li{list-style: none;}
+        .clearfix::after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .fl{float: left;}
+        .box{
+            width: 500px;
+            height: 320px;
+            margin: 30px 100px;
+        }
+        .fdj{
+            width: 500px;
+            height: 250px;
+            position: relative;
+        }
+        .salImg,.small-img{
+            width: 500px;
+            height: 250px;
+        }
+        .move{
+            height: 50px;
+            width: 50px;
+            background-color: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+        .big-img{
+            width: 500px;
+            height: 250px;
+            position: absolute;
+            top: 0;
+            left: 530px;
+            overflow: hidden;
+            display: none;
+        }
+        .bigImg{
+            width: 1000px;
+            height: 500px;
+            position: absolute;
+        }
+        .box-list{
+            width: 540px;
+            height: 50px;
+            margin-top: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .list{
+            width: 700px;
+            position: absolute;
+        }
+        .box-list li{
+            margin-right: 10px;
+        }
+        .box-list li:last-child{
+            margin-right: 0;
+        }
+        .box-list li,.box-list li img {
+            width: 100px;
+            height: 50px;
+        }
+        .prev,.next{
+            position: absolute;
+            top:50%;
+            margin-top: -10px;
+            height: 20px;
+            width: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            font-size: 16px;
+            line-height: 20px;
+            color: aqua;
+            text-align: center;
+            display: none;
+        }
+        .prev{
+            left: 0;
+        }
+        .next{
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="fdj">
+            <div class="small-img">
+                <img src="" alt="" class="salImg">
+                <div class="move"></div>
+            </div>
+            <div class="big-img">
+                <img src="" alt="" class="bigImg">
+            </div>
+        </div>
+        <div class="box-list">
+            <!-- <ul class="list clearfix">
+                <li class="fl"><img src="./img/1.jpg" alt=""></li>
+            </ul> -->
+        </div>
+    </div>
+</body>
+<script src="./js/jquery-3.6.0.js"></script>
+<script>
+    $(function () {
+        $.get('./data/car.json',function (d) {
+            console.log(d);
+            var data = d.data
+            setData(data)
+        })
+        function setData(arr) {
+            $('.salImg').prop('src',arr[0])
+            $('.bigImg').prop('src',arr[0])
+            var $list = $(`<ul class="list clearfix">`)
+            $(arr).each(function () {
+                $list.append(`<li class="fl"><img src="${this}" alt=""></li>`)
+            })
+            $('.box-list').append($list,`<span class='prev'>&lt;</span><span class='next'>&gt;</span>`)
+            $list.css({width:880})
+            setShow()
+        }
+        function setShow() {
+            //放大镜
+            var salce = $('.bigImg').width()/$('.salImg').width();
+            $('.move').css({width:$('.big-img').width()/salce,height:$('.big-img').height()/salce}).mousedown(function (e) {
+                var dicx = e.clientX-$('.move').offset().left;
+                var dicy = e.clientY-$('.move').offset().top;
+                $(document).mousemove(function (e) {
+                    var picx = e.clientX - dicx - $('.small-img').offset().left;
+                    var picy = e.clientY - dicy - $('.small-img').offset().top;
+                    var maxl = $('.small-img').width()-$('.move').width();
+                    var maxt = $('.small-img').height()-$('.move').height();
+                    picx = picx>maxl?maxl:picx<0?0:picx;
+                    picy = picy>maxt?maxt:picy<0?0:picy;
+                    $('.move').css({left:picx,top:picy})
+                    $('.bigImg').css({left:-picx*salce,top:-picy*salce})
+                }).mouseup(function () {
+                    $(document).off('mousemove mouseup')
+                })
+                return false
+            })
+            //切换图片
+            $('.list li').click(function () {
+                $('.salImg,.bigImg').prop('src',$(this).find('img').prop('src'));
+            })
+            //上下按钮
+            var index = 0
+            $('.next').click(function () {
+                index++;
+                if (index>3) {
+                    index = 3
+                }
+                $('.list').animate({left:-index*110})
+            })
+            $('.prev').click(function () {
+                index--;
+                if (index<0) {
+                    index = 0
+                }
+                $('.list').animate({left:-index*110})
+            })
+            $('.box').mouseenter(function () {
+                $('.move,.big-img,.next,.prev').css({display:'block'})
+                
+            }).mouseleave(function () {
+                $('.move,.big-img,.next,.prev').css({display:'none'})
+            })
+        }
+    })
+</script>
+</html>

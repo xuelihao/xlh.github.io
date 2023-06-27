@@ -1,0 +1,19 @@
+{
+    "data":[
+        {
+            "title":"皮肤列表1",
+            "url":["./img/1.jpg","./img/2.jpg","./img/3.jpg","./img/4.jpg"]
+        },
+        {
+            "title":"皮肤列表2",
+            "url":["./img/5.jpg","./img/6.jpg","./img/7.jpg","./img/8.jpg"]
+        },
+        {
+            "title":"皮肤列表3",
+            "url":["./img/9.jpg","./img/10.jpg","./img/11.jpg","./img/12.jpg"]
+        },{
+            "title":"皮肤列表4",
+            "url":["./img/13.jpg","./img/14.jpg","./img/15.jpg","./img/16.jpg"]
+        }
+    ]
+}

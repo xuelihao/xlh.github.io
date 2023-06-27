@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{padding: 0;margin: 0;}
+        li{list-style: none;}
+        .clearfix::after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .fl{float: left;}
+        .fr{float: right;}
+        img{
+            width: 1000px;
+            height: 500px;
+        }
+        .box{
+            width: 1000px;
+            height: 500px;
+            margin: 100px auto;
+        }
+        .option{
+            height: 50px;
+            background-color: #ddd;
+        }
+        .option li {
+            padding: 14px;
+            margin: 0 20px;
+        }
+        .banner{
+            position: relative;
+            width: 1000px;
+            height: 500px;
+            overflow: hidden;
+        }
+        .banner ul{
+            position: relative;
+            height: 500px;
+            width: 9000px;
+            /* display: none; */
+        }
+        .banner ul li {
+            float: left;
+            /* display: none; */
+        }
+        .list-doc{
+            position: absolute;
+            bottom: 0px;
+            text-align: center;
+            width: 100%;
+        }
+        .lis-doc {
+            width: 15px;
+            height: 15px;
+            background-color: aqua;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .prev,.next{
+            position: absolute;
+            top: 50%;
+            margin-top: -20px;
+            height: 40px;
+            width: 40px;
+            display: block;
+            background-color: rgba(0, 0, 0, 0.5);
+            font-size: 20px;
+            line-height: 40px;
+            text-align: center;
+            color: aqua;
+            z-index: 100;
+            text-decoration: none;
+            /* display: none; */
+        }
+        .prev{
+            left: 10px;
+        }
+        .next{
+            right: 10px;
+        }
+        .active{
+            background-color: #fff;
+            transition: 1s;
+        }
+        .list-option li.on{
+            background-color: aqua;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <!-- 选项卡 -->
+        <div class="option">
+            <!-- <ul class="list-option clearfix">
+                <li class="fl">皮肤列表1</li>
+                <li class="fl">皮肤列表2</li>
+                <li class="fl">皮肤列表3</li>
+                <li class="fl">皮肤列表4</li>
+            </ul> -->
+        </div>
+        <!-- 轮播图 -->
+        <div class="banner">
+            <!-- <div class="list-banner">
+                
+                <ul class="banner-lis">
+                    <li><img src="./img/13.jpg" alt=""></li>
+                    <li><img src="./img/14.jpg" alt=""></li>
+                    <li><img src="./img/15.jpg" alt=""></li>
+                    <li><img src="./img/16.jpg" alt=""></li>
+                </ul>
+            </div>
+            <div class="list-doc">
+                <span class="lis-doc"></span>
+                <span class="lis-doc"></span>
+                <span class="lis-doc"></span>
+                <span class="lis-doc"></span>
+            </div>
+            <a href="javascript:;" class="next">></a>
+            <a href="javascript:;" class="prev"><</a> -->
+        </div>
+    </div>
+</body>
+<script src="./js/jquery-3.6.0.js"></script>
+<script>
+    $(function () {
+        $.get('./data/car3.json',function (d) {
+            var data = d.data
+            var $option = $(`<ul class="list-option">`);
+            $(data).each(function () {
+                $(`<li class="fl">${this.title}</li>`).appendTo($option)
+            })
+            $('.option').append($option)
+            setData(data,0)
+            $('.list-option li').eq(0).addClass('on');
+            $('.list-option li').click(function () {
+                $('.banner').empty()
+                setData(data,$(this).index())
+                $(this).addClass('on').siblings().removeClass('on')
+            })
+        })
+        function setData(data,index) {
+            var arr = data[index].url
+            $('.banner').append(`<div class="list-banner"></div>
+                                <div class="list-doc"></div>
+                                <a href="javascript:;" class="next">></a>
+                                <a href="javascript:;" class="prev"><</a>`)
+            var $banner_lis = $(`<ul class="banner-lis">`)
+            $(arr).each(function () {
+                $(`<li><img src="${this}" alt=""></li>`).appendTo($banner_lis)
+                $(`<span class="lis-doc"></span>`).appendTo('.list-doc')
+            })
+            $('.list-banner').append($banner_lis)
+            setBanner()
+        }
+        function setBanner() {
+            var first = $('.banner-lis li').last().clone(true);
+            var last = $('.banner-lis li').first().clone(true);
+            $('.banner-lis').append(last).prepend(first);
+            var oneSize = first.width();
+            var len = $('.banner-lis li').length;
+            var index = 1;
+            $('.banner-lis').css({left:-oneSize*index,width:oneSize*len})
+            $('.list-doc span').eq(index-1).addClass('active'); 
+            console.log($('.list-doc span').eq(index-1));
+            $('.next').click(function () {
+                if($('.banner-lis').is('.banner-lis:animated')){
+                    return
+                }
+                index++;
+                if (index>len-2) {
+                    index = 1;
+                    $('.banner-lis').css('left',0)
+                }
+                style()
+            })
+            $('.prev').click(function () {
+                if($('.banner-lis').is('.banner-lis:animated')){
+                    return
+                }
+                index--;
+                if (index<1) {
+                    index = len-2;
+                    $('.banner-lis').css('left',-(len-1)*oneSize)
+                }
+                style()
+            })
+            $('.list-doc span').click(function () {
+                if($('.banner-lis').is('.list:animated')){
+                    return
+                }
+                index = $(this).index()+1
+                style()
+            })
+            paly()
+            function paly() {
+                clearInterval($('.box')[0].timer);
+                $('.box')[0].timer = setInterval(function () {
+                    $('.next').trigger('click');
+                },2000)
+            }
+            $('.box').mouseenter(function () {
+                clearInterval($('.box')[0].timer);
+                $('.next').css('display','block');
+                $('.prev').css('display','block');
+            }).mouseleave(function () {
+                paly()
+                $('.next').css('display','none');
+                $('.prev').css('display','none');
+            })
+            function style() {
+                $('.list-doc span').eq(index-1).addClass('active').siblings().removeClass('active');
+                $('.banner-lis').animate({left:-index*oneSize})
+            }
+        }
+    })
+</script>
+</html>

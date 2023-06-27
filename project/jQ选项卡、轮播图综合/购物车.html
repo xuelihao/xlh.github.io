@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            padding: 0px;
+            margin: 0px;
+        }
+        .clearfix::after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .fl{float: left;}
+        .fr{float: right;}
+        button{
+            background-color: #fff;
+        }
+        .box{
+            width: 1000px;
+            margin: 30px auto;
+        }
+        .box-tab{
+            width: 990px;
+            height: 30px;
+            margin-bottom: 20px;
+            line-height: 30px;
+            background-color: #EEEEEE;
+            padding-left: 10px;
+        }
+        .box-tab span {
+            width: 100px;
+        }
+        .tab-show{
+            margin-left: 25px;
+        }
+        .tab-price{
+            margin-left: 415px;
+        }
+        .box-lis{
+            height: 100px;
+            width: 990px;
+            border: 1px solid #9F9F9F;
+            padding:10px 0 0 10px ;
+            margin-bottom: 20px;
+        }
+        .box-lis span {
+            width: 100px;
+        }
+        .box .dx{
+            width: 50px;
+        }
+        .lis-count button {
+            padding: 5px;
+            border: #9F9F9F solid 1px;
+        }
+        .box-lis .lis-show {
+            width: 180px;
+            height: 90px;
+        }
+        .lis-show img{
+            height: 90px;
+        }
+        .box-lis .lis-txt {
+            width: 320px;
+            text-align: center;
+        }
+        .lis-price{
+            margin-left: 40px;
+        }
+        .box-js{
+            width: 990px;
+            height: 50px;
+            line-height: 50px;
+            background-color: #EEEEEE;
+            padding-left: 10px;
+        }
+        .box-js span {
+            width: 170px;
+            text-align: center;
+        }
+        .js{
+            background-color: red;
+            color: #fff;
+            font-size: 20px;
+        }
+        .remove{
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="box-tab clearfix">
+            <span class="tab-show fl">商品</span>
+            <span class="tab-price fl">单价（元）</span>
+            <span class="tab-count fl">数量</span>
+            <span class="tab-xj fl">小计</span>
+            <span class="tab-cz fl">操作</span>
+        </div>
+        <div class="list">
+            <!-- <div class="box-lis clearfix">
+                <span class="lis-show fl">
+                    <img src="./img/1.jpg" alt="">
+                </span>
+                <span class="lis-txt fl">黑夜使者</span>
+                <span class="lis-price fl">
+                    <b class="price">2999</b>
+                </span>
+                <span class="lis-count fl">
+                    <button>-</button>
+                    <span class="count">1</span>
+                    <button>+</button>
+                </span>
+                <span class="lis-xj fl">
+                    <b class="total">2999</b>
+                </span>
+                <button class="fl remove">删除</button>
+            </div> -->
+        </div>
+        <div class="box-js clearfix">
+            <span class="del fl">删除选中商品</span>
+            <span class="delAll fl">全部删除</span>
+            <span class="js-count fl">
+                总件：
+                <b class="allcount">10</b>
+            </span>
+            <span class="js-money fl">
+                总金额：
+                <b class="allmoney">1000</b>
+            </span>
+            <span class="js fr">结算</span>
+        </div>
+    </div>
+</body>
+<script src="./js/jquery-3.6.0.js"></script>
+<script>
+    $(function () {
+        $.get('./data/car2.json',function (d) {
+            var data = d.data
+            setData(data)
+        })
+        function setData(arr) {
+            $(arr).each(function () {
+                $(`<div class="box-lis clearfix">
+                        <span class="lis-show fl">
+                            <img src="${this.url}" alt="">
+                        </span>
+                        <span class="lis-txt fl">${this.title}</span>
+                        <span class="lis-price fl">
+                            <b class="price">${this.price}</b>
+                        </span>
+                        <span class="lis-count fl">
+                            <button>-</button>
+                            <span class="count">1</span>
+                            <button>+</button>
+                        </span>
+                        <span class="lis-xj fl">
+                            <b class="total">${this.price}</b>
+                        </span>
+                        <button class="fl remove">删除</button>
+                    </div>`).appendTo('.list')
+            })
+            setCar()
+        }
+        function setCar() {
+            $('button:contains(+)').click(function () {
+                var par = $(this).parents('.box-lis');
+                console.log($(this));
+                var price = par.find('.price').text();
+                var count = par.find('.count').text();
+                count++
+                par.find('.total').text(count*price)
+                par.find('.count').text(count)
+                setAll()
+                return false;
+            })
+            $('button:contains(-)').click(function () {
+                var par = $(this).parents('.box-lis');
+                console.log($(this));
+                var price = par.find('.price').text();
+                var count = par.find('.count').text();
+                count--
+                count = count<1?1:count;
+                par.find('.total').text(count*price)
+                par.find('.count').text(count)
+                setAll()
+                return false;
+            })
+            $('.remove').click(function () {
+                $(this).parents('.box-lis').remove()
+                setAll()
+            })
+            $('.box-lis').click(function () {
+                $(this).css('border-color','red').addClass('active')
+                setAll()
+            })
+            $('.del').click(function () {
+                $('.active').remove()
+                setAll()
+            })
+            $('.delAll').click(function () {
+                $('.list').empty()
+                setAll()
+            })
+            setAll()
+            function setAll() {
+                var allcount = 0;
+                var money = 0;
+                $('.active').each(function () {
+                    money +=parseInt($(this).find('.total').text());
+                    allcount +=parseInt($(this).find('.count').text());
+                })
+                $('.allcount').text(allcount);
+                $('.allmoney').text(money);
+            }
+        }
+    })
+</script>
+</html>

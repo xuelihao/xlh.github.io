@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{padding: 0;margin: 0;}
+        li{list-style: none;}
+        .clearfix::after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .fl{float: left;}
+        .fr{float: right;}
+        img{
+            width: 1000px;
+            height: 500px;
+        }
+        .box{
+            width: 1000px;
+            height: 500px;
+            margin: 100px auto;
+        }
+        .option{
+            height: 50px;
+            background-color: #ddd;
+        }
+        .option li {
+            padding: 14px;
+            margin: 0 20px;
+        }
+        .banner{
+            position: relative;
+            width: 1000px;
+            height: 500px;
+        }
+        .banner ul{
+            position: relative;
+            height: 500px;
+            width: 1000px;
+            display: none;
+        }
+        .banner ul li {
+            position: absolute;
+            display: none;
+        }
+        .list-doc{
+            position: absolute;
+            bottom: 0px;
+            text-align: center;
+            width: 100%;
+        }
+        .lis-doc {
+            width: 15px;
+            height: 15px;
+            background-color: aqua;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .prev,.next{
+            position: absolute;
+            top: 50%;
+            margin-top: -20px;
+            height: 40px;
+            width: 40px;
+            display: block;
+            background-color: rgba(0, 0, 0, 0.5);
+            font-size: 20px;
+            line-height: 40px;
+            text-align: center;
+            color: aqua;
+            z-index: 100;
+            text-decoration: none;
+            /* display: none; */
+        }
+        .prev{
+            left: 10px;
+        }
+        .next{
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="option">
+            <ul class="list-option clearfix">
+                <li class="fl">皮肤列表1</li>
+                <li class="fl">皮肤列表2</li>
+                <li class="fl">皮肤列表3</li>
+                <li class="fl">皮肤列表4</li>
+            </ul>
+        </div>
+        <div class="banner">
+            <div class="list-banner">
+                <ul class="banner-lis">
+                    <li><img src="./img/1.jpg" alt=""></li>
+                    <li><img src="./img/2.jpg" alt=""></li>
+                    <li><img src="./img/3.jpg" alt=""></li>
+                    <li><img src="./img/4.jpg" alt=""></li>
+                </ul>
+                <ul class="banner-lis">
+                    <li><img src="./img/5.jpg" alt=""></li>
+                    <li><img src="./img/6.jpg" alt=""></li>
+                    <li><img src="./img/7.jpg" alt=""></li>
+                    <li><img src="./img/8.jpg" alt=""></li>
+                </ul>
+                <ul class="banner-lis">
+                    <li><img src="./img/9.jpg" alt=""></li>
+                    <li><img src="./img/10.jpg" alt=""></li>
+                    <li><img src="./img/11.jpg" alt=""></li>
+                    <li><img src="./img/12.jpg" alt=""></li>
+                </ul>
+                <ul class="banner-lis">
+                    <li><img src="./img/13.jpg" alt=""></li>
+                    <li><img src="./img/14.jpg" alt=""></li>
+                    <li><img src="./img/15.jpg" alt=""></li>
+                    <li><img src="./img/16.jpg" alt=""></li>
+                </ul>
+            </div>
+            <div class="list-doc">
+                <span class="lis-doc"></span>
+                <span class="lis-doc"></span>
+                <span class="lis-doc"></span>
+                <span class="lis-doc"></span>
+            </div>
+            <a href="javascript:;" class="next">></a>
+            <a href="javascript:;" class="prev"><</a>
+        </div>
+    </div>
+</body>
+<script src="./js/jquery-3.6.0.js"></script>
+<script>
+    $(function () {
+        var index = 0;
+        var index2 = 0;
+        $('.banner-lis').eq(index).css('display','block').children('li').eq(index2).css('display','block');
+        $('.list-option li').eq(index).css('background','aquamarine');
+        $('.lis-doc').eq(index2).css('background','red');
+        $('.list-option li').click(function () {
+            index = $(this).index();
+            index2 = 0;
+            $(this).css('background','aquamarine').siblings().css('background','#ddd');
+            $('.banner-lis').eq(index).css('display','block').siblings().css('display','none');
+            $('.lis-doc').eq(index2).css('background','red').siblings().css('background','aqua');
+            $('.banner-lis').eq(index).children('li').eq(index2).css('display','block');
+        })
+        $('.lis-doc').click(function () {
+            index2 = $(this).index();
+            style()
+        });
+        $('.next').click(function () {
+            index2++
+            var leng = $('.banner-lis').eq(index).children('li').length;
+            if (index2 >= leng) {
+                index2 = 0;
+            }
+            style()
+        })
+        $('.prev').click(function () {
+            index2--
+            var leng = $('.banner-lis').eq(index).children('li').length;
+            if (index2 < 0) {
+                index2 = leng-1;
+            }
+            style()
+        })
+        function style() {
+            $('.lis-doc').eq(index2).css('background','red').siblings().css('background','aqua');
+            $('.banner-lis').eq(index).children('li').eq(index2).fadeIn('slow').siblings().fadeOut('slow');
+        }
+    })
+</script>
+</html>
